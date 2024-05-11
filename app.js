@@ -3,6 +3,9 @@ const cors = require('cors');
 const app = express();
 app.use(express.json()); // For Express 4.16.0 and higher
 
+require('dotenv').config(); // env环境变量，host配置
+const ORIGN = process.env.ORIGN;
+
 const users = [
   {username:'pp', password:'666'},
   {username:'tt', password:'666'},
@@ -10,7 +13,7 @@ const users = [
 
 // 配置CORS策略
 const corsOptions = {
-  origin: 'http://localhost:5173', // 允许所有从localhost发起的请求
+  origin: ORIGN, // 允许所有从localhost发起的请求
 };
 app.use(cors(corsOptions));
 
@@ -37,5 +40,5 @@ app.post('/login', (req, res) => {
 
 const PORT = 3000;
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running`);
 });
