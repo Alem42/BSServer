@@ -9,6 +9,7 @@ const ORIGN = process.env.ORIGN;
 const users = [
   {username:'pp', password:'666'},
   {username:'tt', password:'666'},
+  {username:'hh', password:'111'},
 ]
 
 // 配置CORS策略
