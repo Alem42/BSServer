@@ -1,10 +1,16 @@
 const express = require('express');
 const cors = require('cors');
-const app = express();
-app.use(express.json()); // For Express 4.16.0 and higher
+const bodyParser = require('body-parser');
+const app1 = express();
+const app2 = express();
 
+app1.use(express.json()); // For Express 4.16.0 and higher
+app2.use(bodyParser.text()); // 用于解析文本类型的请求体
+
+// env配置
 require('dotenv').config(); // env环境变量，host配置
 const ORIGN = process.env.ORIGN;
+
 
 const users = [
   {username:'pp', password:'666'},
@@ -13,18 +19,22 @@ const users = [
 ]
 
 // 配置CORS策略
-
 const corsOptions = {
   origin: ORIGN, // 允许所有从localhost发起的请求
 };
-app.use(cors(corsOptions));
 
-app.get('/', (req, res) => {
-  res.send('New App.js!\n');
+app1.use(cors(corsOptions));
+app2.use(cors(corsOptions));
+
+app1.get('/', (req, res) => {
+  res.send('New App.js on port 3000!\n');
 });
 
+app2.get('/', (req, res) => {
+  res.send('New App.js on port 4000!\n');
+});
 // 定义一个POST路由
-app.post('/login', (req, res) => {
+app1.post('/login', (req, res) => {
   // 直接将接收到的请求体返回给客户端
   console.log(req.body)
   const user = users.find(u => u.username === req.body.username && u.password === req.body.password);
@@ -40,7 +50,19 @@ app.post('/login', (req, res) => {
   }
 })
 
-const PORT = 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running`);
+// 处理 4G 模块发送的字符串
+app2.post('/receive-string', (req, res) => {
+  const receivedString = req.body;
+  console.log('Received string from 4G module:', receivedString);
+  res.send({ ok: true, message: 'String received successfully' });
+});
+
+const PORT1 = 3000;
+const PORT2 = 4000;
+app1.listen(PORT1, () => {
+  console.log(`Server is running on port ${PORT1}`);
+});
+
+app2.listen(PORT2, () => {
+  console.log(`Server is running on port ${PORT2}`);
 });
